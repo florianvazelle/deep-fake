@@ -5,16 +5,19 @@
 
 using namespace cv;
 
+Mat openImg(std::string path) {
+  Mat img = imread(path, 0);
+  if(img.empty())
+    std::cout << "Could not read the image: " << path << std::endl;
+  return img;
+}
+
 int main(int argc, char** argv) {
   // create a gui window:
   namedWindow("Output", 1);
 
-  std::string image_path = samples::findFile("assets/therock.jpg");
-  Mat img = imread(image_path, 0);
-  if(img.empty()) {
-    std::cout << "Could not read the image: " << image_path << std::endl;
-    return 1;
-  }
+  //std::string image_path = samples::findFile("assets/therock.jpg");
+  Mat img = openImg("assets/therock.jpg");
 
   // initialize a 120X350 matrix of black pixels:
   Mat output = Mat::zeros(120, 350, CV_8UC3);
