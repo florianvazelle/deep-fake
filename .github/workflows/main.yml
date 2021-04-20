@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   linux:
     timeout-minutes: 10
-
+    
     strategy:
       matrix:
         compiler: [g++-7, g++-8, g++-9, g++, clang++-8, clang++-9, clang++]
@@ -32,14 +32,24 @@ jobs:
         run:  |
           sudo apt-get update
           sudo apt-get install clang-8 -y
-        
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+
+      - name: Install Conan
+        run: |
+          pip -VV
+          pip install --upgrade pip setuptools wheel conan
+
       - name: Create Build Environment
         run: cmake -E make_directory ${{ runner.workspace }}/build ${{ runner.workspace }}/instdir
 
       - name: Configure CMake
         shell: bash
         working-directory: ${{ runner.workspace }}/build
-        run: cmake $GITHUB_WORKSPACE -DBUILD_APP=ON
+        run: cmake $GITHUB_WORKSPACE
         env:
           CXX: ${{ matrix.compiler }}
 
@@ -71,17 +81,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install Conan
+        run: |
+          python -c "import sys; print(sys.version)"
+          python -m pip install --upgrade pip
+          pip install conan
+
       - name: Create Build Environment
         run: cmake -E make_directory ${{ runner.workspace }}/build ${{ runner.workspace }}/instdir
 
       - name: Configure CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: cmake $GITHUB_WORKSPACE -DBUILD_APP=ON
-        env:
-          CXX: ${{ matrix.compiler }}
+        run: cmake $GITHUB_WORKSPACE
 
       - name: Build
-        shell: bash
         working-directory: ${{ runner.workspace }}/build
         run: cmake --build . --config Release
