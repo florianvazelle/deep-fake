@@ -3,6 +3,7 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
+#include <Image.hpp>
 
 using namespace cv;
 using namespace dlib;
@@ -40,21 +41,11 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  // create a gui window:
-  namedWindow("Output", 1);
+  // create an image
+  Image img(in_file);
 
-  //std::string image_path = samples::findFile("assets/therock.jpg");
-  Mat img = openImg(in_file);
-
-  // initialize a 120X350 matrix of black pixels:
-  Mat output = Mat::zeros(120, 350, CV_8UC3);
-
-  // write text on the matrix:
-  putText(output, "Hello World :)", cvPoint(15, 70), FONT_HERSHEY_PLAIN, 3, cvScalar(0, 255, 0), 4);
-
-  // display the image:
-  //imshow("Output", output);
-  imshow("Output", img);
+  // display the image
+  img.show();
 
   // wait for the user to press any key:
   waitKey(0);
