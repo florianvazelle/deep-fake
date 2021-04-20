@@ -29,9 +29,14 @@ jobs:
 
       - name: Install clang-8
         if: ${{ matrix.compiler == 'clang++-8' }}
-        run:  |
+        run: |
           sudo apt-get update
           sudo apt-get install clang-8 -y
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt install libgtk2.0-dev
 
       - name: Setup Python
         uses: actions/setup-python@v2
