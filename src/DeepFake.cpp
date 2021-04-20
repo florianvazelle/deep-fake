@@ -6,5 +6,46 @@ DeepFake* DeepFake::GetInstance() {
     return instance;
 }
 
-DeepFake::DeepFake() {
+DeepFake::DeepFake() {}
+
+void DeepFake::draw(cv::Mat& img) const {
+  for (int i = 0; i < nextPoints.size(); ++i) {
+    cv::line(img, prevPoints[i], nextPoints[i], cv::Scalar(0, 255, 0), 2);
+    cv::circle(img, nextPoints[i], 5, cv::Scalar(255, 0, 0), 2);
+  }
+
+  // cv::rectangle(img, roi, cv::Scalar(0, 0, 255), 3);
+
+  cv::imshow("input", img);
+}
+
+void DeepFake::run(const std::string& videoname) {
+    cv::VideoCapture cap;
+    cv::Mat frame;
+
+    // si videoname n’est pas null, ouvrir la video dans cap, sinon ouvrir la camera
+    if (videoname.size() > 0) {
+        cap.open(videoname);
+    } else {
+        cap.open(0);  // open the default camera
+    }
+
+    // si cap n’est pas ouvert, quitter la fonction
+    if (!cap.isOpened()) return;
+
+    // on recupere une image depuis cap et la stocker dans nextInput
+    cap >> frame;  // get a new frame from camera
+    cv::cvtColor(frame, nextInput, cv::COLOR_RGB2GRAY);
+
+    // tant que nextinput n’est pas vide
+    while (!nextInput.empty()) {
+        // on dessine
+        draw(frame);
+
+        // on recupere une nouvelle image et la stocker dans nextInput
+        cap >> frame;
+        cv::cvtColor(frame, nextInput, cv::COLOR_RGB2GRAY);
+
+        if ((char)27 == (char)cv::waitKey(10)) break;
+    }
 }
