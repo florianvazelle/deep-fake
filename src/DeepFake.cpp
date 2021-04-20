@@ -1,5 +1,11 @@
 #include <DeepFake.hpp>
 
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/opencv.hpp>
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/objdetect.hpp"
+#include "opencv2/imgproc.hpp"
+
 DeepFake* DeepFake::GetInstance() {
     // Not thread safe
     static DeepFake* instance = new DeepFake();
@@ -39,6 +45,18 @@ void DeepFake::run(const std::string& videoname) {
 
     // tant que nextinput n’est pas vide
     while (!nextInput.empty()) {
+        cv::CascadeClassifier faceCascade;
+        faceCascade.load("assets/models/haarcascade_frontalface_default.xml");
+
+        if(faceCascade.empty()) { std::cout<< "xml file not loaded" << std::endl; }
+
+        std::vector<cv::Rect> faces;
+        faceCascade.detectMultiScale(frame, faces, 1.1, 10);
+
+        for(int i = 0; i < faces.size(); i++){
+            rectangle(frame, faces[i].tl(), faces[i].br(), cv::Scalar(255,0,255), 2);
+        }
+
         // on dessine
         draw(frame);
 
