@@ -9,7 +9,6 @@ class DeepFake final {
     public:
         static DeepFake* GetInstance();
 
-        static void analyse(cv::Mat& img);
         void run(const std::string& videoname = "");
 
     private:
@@ -23,5 +22,8 @@ class DeepFake final {
         std::vector<cv::Point2f> prevPoints;
         std::vector<cv::Point2f> nextPoints;
 
+        void detectPoints(const cv::Rect& area, cv::Mat& img);
+        void trackPoints(const cv::Rect& area);
+        void analyse(cv::Mat& img);
         void draw(cv::Mat& img) const;
 };
