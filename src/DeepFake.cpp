@@ -12,6 +12,7 @@
 #include <dlib/image_processing/frontal_face_detector.h>
 
 #define FACE_DOWNSAMPLE_RATIO 4
+#define SKIP_FRAMES 2
 
 #include <dlib/image_io.h>
 #include <dlib/image_transforms.h>
@@ -42,6 +43,12 @@ void DeepFake::run(const std::string& filename) const {
     dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
 
     double fps = 0;
+    int count = 0;
+
+    const int num_faces = 1;
+
+    std::vector<dlib::rectangle> faces(num_faces);
+    std::vector<dlib::full_object_detection> shapes(num_faces);
 
     // On récupère des frames et on les traite jusqu'à ce que la fenêtre principale soit fermée
     while(!win.is_closed()) {
@@ -62,11 +69,15 @@ void DeepFake::run(const std::string& filename) const {
         dlib::cv_image<dlib::bgr_pixel> cimg(temp);
 
         // On detecte les faces sur l'image redimenssionnée
-        std::vector<dlib::rectangle> faces = detector(cimg_small);
+        if (count % SKIP_FRAMES == 0) {
+            faces.clear();
+            faces = detector(cimg_small);
+        }
+
+        count++;
 
         // On trouve la position de chaque face
-        std::vector<dlib::full_object_detection> shapes;
-        for (unsigned long i = 0; i < faces.size(); ++i) {
+        for (unsigned int i = 0; i < faces.size(); ++i) {
             // On redimensionne le rectangle obtenu pour obtenir une image en pleine résolution
             dlib::rectangle r(
                 (long)(faces[i].left() * FACE_DOWNSAMPLE_RATIO),
@@ -76,8 +87,7 @@ void DeepFake::run(const std::string& filename) const {
             );
 
             // On détection les points de repère sur l'image en taille réelle
-            dlib::full_object_detection shape = m_face_landmark(cimg, r);
-            shapes.push_back(shape);
+            shapes[i] = m_face_landmark(cimg, r);
         }
 
         // On calcule les fps pour
