@@ -11,13 +11,13 @@ class Image final {
     public:
         Image(const std::string&);
 
-        inline image_type& frame() { return img; }
-        inline const image_type& frame() const { return img; }
+        inline image_type& frame() { return m_img; }
+        inline const image_type& frame() const { return m_img; }
 
     private:
-        // chemin de l'image
-        const std::string& path;
+        // Chemin de l'image
+        const std::string& m_path;
 
-        // représentation de l'image en opencv (matrice)
-        image_type img;
+        // Représentation de l'image avec dlib
+        image_type m_img;
 };

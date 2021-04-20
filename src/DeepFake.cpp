@@ -17,11 +17,11 @@ DeepFake* DeepFake::GetInstance() {
 }
 
 DeepFake::DeepFake() {
-    dlib::deserialize(SHAPE_PREDICTOR_68_FACE_LANDMARKS) >> face_landmark;
+    dlib::deserialize(SHAPE_PREDICTOR_68_FACE_LANDMARKS) >> m_face_landmark;
 }
 
 void DeepFake::run(const std::string& filename) const {
-    cv::VideoCapture cap("assets/toto.webm");
+        cv::VideoCapture cap("assets/toto.webm");
 
     // si cap n’est pas ouvert, quitter la fonction
     if (!cap.isOpened()) {
@@ -34,8 +34,12 @@ void DeepFake::run(const std::string& filename) const {
     // Load face detection and pose estimation models.
     dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
 
+    double fps = 0;
+
     // Grab and process frames until the main window is closed by the user.
     while(!win.is_closed()) {
+        auto time_start = cv::getTickCount();
+
         // Grab a frame
         cv::Mat temp;
         if (!cap.read(temp)) {
@@ -50,7 +54,14 @@ void DeepFake::run(const std::string& filename) const {
         // Find the pose of each face.
         std::vector<dlib::full_object_detection> shapes;
         for (unsigned long i = 0; i < faces.size(); ++i)
-            shapes.push_back(face_landmark(cimg, faces[i]));
+            shapes.push_back(m_face_landmark(cimg, faces[i]));
+
+        auto time_end = cv::getTickCount();
+        auto time_per_frame = (time_end - time_start) / cv::getTickFrequency();
+
+        fps = (15 * fps + (1 / time_per_frame)) / 16;
+
+        printf("Total time: %3.5f | FPS: %3.2f\n", time_per_frame, fps);
 
         // Display it all on the screen
         win.clear_overlay();
