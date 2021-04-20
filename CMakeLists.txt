@@ -1,5 +1,5 @@
 #
-# engine
+# deep_fake
 #
 
 cmake_minimum_required(VERSION 3.12)
@@ -18,7 +18,7 @@ project(
 set(CMAKE_CXX_STANDARD 17)
 
 #
-# Add engine library target
+# Add executable
 #
 
 if(CONAN_EXPORTED)
