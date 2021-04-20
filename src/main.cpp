@@ -5,11 +5,8 @@
 #include <opencv2/opencv.hpp>
 #include <Image.hpp>
 
-using namespace cv;
-using namespace dlib;
-
-Mat openImg(std::string path) {
-  Mat img = imread(path, 0);
+cv::Mat openImg(std::string path) {
+  cv::Mat img = cv::imread(path, 0);
   if(img.empty())
     std::cout << "Could not read the image: " << path << std::endl;
   return img;
@@ -17,7 +14,7 @@ Mat openImg(std::string path) {
 
 int main(int argc, char** argv) {
   /* Define the command line options */
-  command_line_parser parser;
+  dlib::command_line_parser parser;
 
   parser.add_option("h", "Display this help message.");
   parser.add_option("in", "The input image", 1);
@@ -48,7 +45,7 @@ int main(int argc, char** argv) {
   img.show();
 
   // wait for the user to press any key:
-  waitKey(0);
+  cv::waitKey(0);
 
   return 0;
 }
