@@ -13,6 +13,10 @@
 
 #define FACE_DOWNSAMPLE_RATIO 4
 
+#include <dlib/image_io.h>
+#include <dlib/image_transforms.h>
+#include <fstream>
+
 DeepFake* DeepFake::GetInstance() {
     // Not thread safe
     static DeepFake* instance = new DeepFake();
@@ -24,9 +28,9 @@ DeepFake::DeepFake() {
 }
 
 void DeepFake::run(const std::string& filename) const {
-    cv::VideoCapture cap("assets/toto.webm");
-
-    // Si cap n’est pas ouvert, on quitte la fonction
+    //cv::VideoCapture cap("assets/toto.webm");
+    cv::VideoCapture cap(0);
+    // si cap n’est pas ouvert, quitter la fonction
     if (!cap.isOpened()) {
         std::cerr << "Unable to connect to camera" << std::endl;
         return;
