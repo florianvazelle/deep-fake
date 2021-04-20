@@ -38,3 +38,16 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CONAN_LIBS})
+
+#
+# Generate preprocessor variable for all model
+#
+
+file(GLOB_RECURSE MODELS_PATH "${CMAKE_SOURCE_DIR}/assets/models/*.dat")
+
+foreach(model_path ${MODELS_PATH})
+    string(REPLACE ".dat" "" new_name ${model_path})
+    get_filename_component(filename ${new_name} NAME)
+    string(TOUPPER ${filename} filename)
+    add_compile_definitions(${filename}="${model_path}")
+endforeach()
