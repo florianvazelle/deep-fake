@@ -1,4 +1,5 @@
 #include <DeepFake.hpp>
+#include <Image.hpp>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
@@ -14,6 +15,20 @@ DeepFake* DeepFake::GetInstance() {
 
 DeepFake::DeepFake() {}
 
+void DeepFake::analyse(cv::Mat& img) {
+    cv::CascadeClassifier faceCascade;
+    faceCascade.load("assets/models/haarcascade_frontalface_default.xml");
+
+    if(faceCascade.empty()) { std::cout<< "xml file not loaded" << std::endl; }
+
+    std::vector<cv::Rect> faces;
+    faceCascade.detectMultiScale(img, faces, 1.1, 10);
+
+    for(int i = 0; i < faces.size(); i++){
+        rectangle(img, faces[i].tl(), faces[i].br(), cv::Scalar(255,0,255), 2);
+    }
+}
+
 void DeepFake::draw(cv::Mat& img) const {
   for (int i = 0; i < nextPoints.size(); ++i) {
     cv::line(img, prevPoints[i], nextPoints[i], cv::Scalar(0, 255, 0), 2);
@@ -26,6 +41,10 @@ void DeepFake::draw(cv::Mat& img) const {
 }
 
 void DeepFake::run(const std::string& videoname) {
+    Image img("assets/therock.jpg");
+    DeepFake::analyse(img.frame());
+    img.show();
+
     cv::VideoCapture cap;
     cv::Mat frame;
 
@@ -45,17 +64,8 @@ void DeepFake::run(const std::string& videoname) {
 
     // tant que nextinput n’est pas vide
     while (!nextInput.empty()) {
-        cv::CascadeClassifier faceCascade;
-        faceCascade.load("assets/models/haarcascade_frontalface_default.xml");
-
-        if(faceCascade.empty()) { std::cout<< "xml file not loaded" << std::endl; }
-
-        std::vector<cv::Rect> faces;
-        faceCascade.detectMultiScale(frame, faces, 1.1, 10);
-
-        for(int i = 0; i < faces.size(); i++){
-            rectangle(frame, faces[i].tl(), faces[i].br(), cv::Scalar(255,0,255), 2);
-        }
+        // on fait les traitements sur l’image
+        DeepFake::analyse(frame);
 
         // on dessine
         draw(frame);

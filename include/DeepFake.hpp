@@ -9,6 +9,7 @@ class DeepFake final {
     public:
         static DeepFake* GetInstance();
 
+        static void analyse(cv::Mat& img);
         void run(const std::string& videoname = "");
 
     private:

@@ -8,6 +8,9 @@ class Image final {
 
         void show() const;
 
+        inline cv::Mat& frame() { return img; }
+        inline const cv::Mat& frame() const { return img; }
+
     private:
         // chemin de l'image
         const std::string& path;
