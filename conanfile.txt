@@ -1,6 +1,5 @@
 [requires]
 opencv/4.5.2
-dlib/19.21
 
 [generators]
 cmake
