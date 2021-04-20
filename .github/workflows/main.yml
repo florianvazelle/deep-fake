@@ -4,8 +4,6 @@ on: [push, pull_request]
 
 jobs:
   linux:
-    timeout-minutes: 10
-    
     strategy:
       matrix:
         compiler: [g++-7, g++-8, g++-9, g++, clang++-8, clang++-9, clang++]
@@ -64,8 +62,6 @@ jobs:
         run: cmake --build . --config Debug
 
   windows:
-    timeout-minutes: 10
-
     strategy:
       matrix:
         os: [windows-latest, windows-2016]
