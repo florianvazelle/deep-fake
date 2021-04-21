@@ -1,4 +1,5 @@
 #include <DeepFake.hpp>
+#include <Image.hpp>
 
 #include <iostream>
 #include <vector>
@@ -11,12 +12,12 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <dlib/image_processing/frontal_face_detector.h>
 
-#define FACE_DOWNSAMPLE_RATIO 4
-#define SKIP_FRAMES 2
-
 #include <dlib/image_io.h>
 #include <dlib/image_transforms.h>
 #include <fstream>
+
+#define FACE_DOWNSAMPLE_RATIO 4
+#define SKIP_FRAMES 2
 
 DeepFake* DeepFake::GetInstance() {
     // Not thread safe
@@ -29,15 +30,15 @@ DeepFake::DeepFake() {
 }
 
 void DeepFake::run(const std::string& filename) const {
-    //cv::VideoCapture cap("assets/toto.webm");
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap("assets/toto.webm");
+
     // si cap n’est pas ouvert, quitter la fonction
     if (!cap.isOpened()) {
         std::cerr << "Unable to connect to camera" << std::endl;
         return;
     }
 
-    dlib::image_window win;
+    dlib::image_window win, picture;
 
     // On chargement des modèles de détection des visages et d'estimation des faces
     dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
@@ -47,8 +48,21 @@ void DeepFake::run(const std::string& filename) const {
 
     const int num_faces = 1;
 
-    std::vector<dlib::rectangle> faces(num_faces);
-    std::vector<dlib::full_object_detection> shapes(num_faces);
+    std::vector<dlib::rectangle> faces(num_faces), pictureFaces(num_faces);
+    std::vector<dlib::full_object_detection> shapes(num_faces), pictureShapes(num_faces);
+
+    {
+        Image img(filename);
+
+        pictureFaces = detector(img.frame());
+
+        for (unsigned int i = 0; i < faces.size(); ++i)
+            pictureShapes[i] = m_face_landmark(img.frame(), pictureFaces[i]);
+
+        picture.clear_overlay();
+        picture.set_image(img.frame());
+        picture.add_overlay(dlib::render_face_detections(pictureShapes));
+    }
 
     // On récupère des frames et on les traite jusqu'à ce que la fenêtre principale soit fermée
     while(!win.is_closed()) {

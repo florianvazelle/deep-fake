@@ -5,7 +5,6 @@
 using namespace std;
 using namespace dlib;
 
-
 int main(int argc, char** argv) {
 	try {
 
@@ -33,15 +32,6 @@ int main(int argc, char** argv) {
 			std::cout << "\nTry the -h option for more information." << std::endl;
 			return 0;
 		}
-
-		array2d<rgb_pixel> img;
-		load_image(img, in_file);
-
-		array2d<unsigned char> edge_image;
-
-		image_window my_window("Image Window");
-
-		my_window.wait_until_closed();
 
 		DeepFake* app = DeepFake::GetInstance();
 		app->run(in_file);
