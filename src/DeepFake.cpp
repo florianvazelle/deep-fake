@@ -1,5 +1,6 @@
 #include <DeepFake.hpp>
 #include <Image.hpp>
+#include <FaceLandMark.hpp>
 
 #include <iostream>
 #include <vector>
@@ -54,10 +55,30 @@ void DeepFake::run(const std::string& filename) const {
     {
         Image img(filename);
 
+        cv::Mat tempPic = toMat(img.frame());
+        tempPic.convertTo(tempPic,CV_32F);
+        cv::Mat tempPicWarped = tempPic.clone();
+
+        std::vector<cv::Point2f> hull1;
+        std::vector<cv::Point2f> hull2;
+        std::vector<int> hullIndex;
+
         pictureFaces = detector(img.frame());
 
         for (unsigned int i = 0; i < pictureFaces.size(); ++i)
             pictureShapes[i] = m_face_landmark(img.frame(), pictureFaces[i]);
+        
+        std::vector<cv::Point2f> PointShape;
+        for(unsigned int j = 0; j < pictureShapes.size(); ++j){
+            int partSize;
+            partSize = pictureShapes[j].num_parts();
+            for(unsigned int k = 0; k < partSize ; ++k){
+                PointShape.push_back(cv::Point(pictureShapes[j].part(k).x(),pictureShapes[j].part(k).y()));
+            }
+        }
+
+        convexHull(PointShape,hullIndex,false,false);
+        
 
         picture.clear_overlay();
         picture.set_image(img.frame());
