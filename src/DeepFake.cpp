@@ -30,7 +30,7 @@ DeepFake::DeepFake() {
 }
 
 void DeepFake::run(const std::string& filename) const {
-    cv::VideoCapture cap("assets/toto.webm");
+    cv::VideoCapture cap(0);
 
     // si cap n’est pas ouvert, quitter la fonction
     if (!cap.isOpened()) {
@@ -56,7 +56,7 @@ void DeepFake::run(const std::string& filename) const {
 
         pictureFaces = detector(img.frame());
 
-        for (unsigned int i = 0; i < faces.size(); ++i)
+        for (unsigned int i = 0; i < pictureFaces.size(); ++i)
             pictureShapes[i] = m_face_landmark(img.frame(), pictureFaces[i]);
 
         picture.clear_overlay();
