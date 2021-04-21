@@ -26,13 +26,20 @@ class Image final {
 
         void detect(const dlib::shape_predictor&, bool = true);
 
-        void masks(std::vector <cv::Mat>&) const;
+        void convexHull(std::vector<std::vector<cv::Point>>&) const;
+        void masks(std::vector <cv::Mat>&, const std::vector<std::vector<cv::Point>>&) const;
         void facesCenter(std::vector<cv::Point>&) const;
 
         void display(dlib::image_window&) const;
 
         inline image_type& frame() { return m_img; }
         inline const image_type& frame() const { return m_img; }
+
+        inline int& rows() { return m_rows; }
+        inline const int& rows() const { return m_rows; }
+
+        inline int& cols() { return m_cols; }
+        inline const int& cols() const { return m_cols; }
 
         inline cv::Mat toMat() { return dlib::toMat(m_img); } // Not const because dlib::toMat is not const
 

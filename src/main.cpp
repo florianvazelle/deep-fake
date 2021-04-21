@@ -2,9 +2,6 @@
 
 #include <dlib/cmd_line_parser.h>
 
-using namespace std;
-using namespace dlib;
-
 int main(int argc, char** argv) {
 	try {
 
