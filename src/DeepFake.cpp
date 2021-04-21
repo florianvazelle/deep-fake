@@ -68,7 +68,7 @@ void DeepFake::run(const std::string& filename) const {
         for (unsigned int i = 0; i < pictureFaces.size(); ++i)
             pictureShapes[i] = m_face_landmark(img.frame(), pictureFaces[i]);
         
-        std::vector<cv::Point2f> PointShape;
+        std::vector<cv::Point> PointShape;
         for(unsigned int j = 0; j < pictureShapes.size(); ++j){
             int partSize;
             partSize = pictureShapes[j].num_parts();
@@ -79,6 +79,8 @@ void DeepFake::run(const std::string& filename) const {
 
         convexHull(PointShape,hullIndex,false,false);
         
+        for(int l = 0 ; l < PointShape.size(); ++l)
+            dlib::draw_solid_circle(img.frame(),PointShape[l],1);
 
         picture.clear_overlay();
         picture.set_image(img.frame());
