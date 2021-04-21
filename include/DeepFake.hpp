@@ -13,7 +13,4 @@ class DeepFake final {
 
     private:
         DeepFake();
-
-        // Modèle de repérage de visage
-        dlib::shape_predictor m_face_landmark;
 };
