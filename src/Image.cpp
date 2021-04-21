@@ -87,6 +87,8 @@ void Image::masks(std::vector <cv::Mat>& masks) const {
         std::vector<int> hullIndex;
         cv::convexHull(points, hullIndex, false, false);
 
+        // TODO : triangulation de delaunay + affine transformation pour faire correspondre les parties du visage
+
         // On récupère les points du mask
         std::vector<cv::Point> hull(hullIndex.size());
         for (unsigned int j = 0; j < hullIndex.size(); ++j) {
