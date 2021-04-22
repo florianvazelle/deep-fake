@@ -2,7 +2,7 @@
 
 #define SKIP_FRAMES 2
 
-FaceDetector::FaceDetector(const std::string& filename, int num_faces) : m_camera(0), m_count(0), m_imgVideo(num_faces), m_imgBasic(num_faces) {
+FaceDetector::FaceDetector(const std::string& filename, int num_faces) : m_camera("./assets/toto.webm"), m_count(0), m_imgVideo(num_faces), m_imgBasic(num_faces) {
     // Si la caméra n’est pas ouvert, quitter la fonction
     if (!m_camera.isOpened()) {
         throw std::runtime_error("Unable to connect to camera.");
