@@ -99,6 +99,8 @@ class Image final {
         inline const int& cols() const { return m_cols; }
 
         inline cv::Mat toMat() { return dlib::toMat(m_img); } // Not const because dlib::toMat is not const
+        
+        inline bool facesAreDetected() const { return m_faces.size() != 0; }
 
     private:
         // Le nombre de visage que l'on veut identifié

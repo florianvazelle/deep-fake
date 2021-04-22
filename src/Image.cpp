@@ -54,8 +54,6 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
 
         // On trouve la position de chaque face
         for (unsigned int i = 0; i < m_faces.size(); ++i) {
-            if (i > num_faces) break;
-
             // On redimensionne le rectangle obtenu pour obtenir une image en pleine résolution
             dlib::rectangle r(
                 (long)(m_faces[i].left() * FACE_DOWNSAMPLE_RATIO),
@@ -77,8 +75,6 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
 
         // On trouve la position de chaque face
         for (unsigned int i = 0; i < m_faces.size(); ++i) {
-            if (i > num_faces) break;
-
             // On détecte les points de repère sur l'image en taille réelle
             m_shapes[i] = face_landmark(m_img, m_faces[i]);
         }
