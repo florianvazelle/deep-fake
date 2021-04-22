@@ -137,5 +137,5 @@ void Image::facesCenter(std::vector<cv::Point>& centers, const std::vector<std::
 void Image::display(dlib::image_window& win) const {
     win.clear_overlay();
     win.set_image(m_img);
-    win.add_overlay(dlib::render_face_detections(m_shapes));
+    // win.add_overlay(dlib::render_face_detections(m_shapes));
 }
