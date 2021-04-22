@@ -11,7 +11,7 @@ FaceDetector::FaceDetector(const std::string& filename, int num_faces) : m_camer
     dlib::deserialize(SHAPE_PREDICTOR_68_FACE_LANDMARKS) >> m_face_landmark;
 
     m_imgBasic.loadImage(filename);
-    m_imgBasic.detect(m_face_landmark, true);
+    m_imgBasic.detect(m_face_landmark, false);
 
     if (!m_imgBasic.facesAreDetected()) {
         throw std::runtime_error("No face is detected in the base image.");
