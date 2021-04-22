@@ -97,7 +97,7 @@ void DeepFake::run(const std::string& filename) const {
                     output.convertTo(output, defaultType);
 
                     cv::Mat temp_final;
-                    cv::seamlessClone(output, temp, masks[0], centers[0], temp_final, cv::NORMAL_CLONE);
+                    cv::seamlessClone(output, temp, masks[0], centers[0], temp_final, cv::MIXED_CLONE);
                     faceDect.video().loadImage(temp_final);
                 }
             }
