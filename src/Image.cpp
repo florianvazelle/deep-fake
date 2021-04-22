@@ -38,10 +38,12 @@ void Image::computeInfo() {
 void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
     // On chargement des modèles de détection des visages et d'estimation des faces
     static dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
+    
+    m_faces.clear();
+    m_shapes.clear();
 
     if (on_small) {
         // On detecte les visages sur l'image redimenssionnée
-        m_faces.clear();
         m_faces = detector(m_img_small, num_faces);
 
         // On trouve la position de chaque face
@@ -61,7 +63,6 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
         }
     } else {
         // On detecte les faces
-        m_faces.clear();
         m_faces = detector(m_img, num_faces);
 
         // On trouve la position de chaque face
