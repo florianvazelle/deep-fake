@@ -46,7 +46,7 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
 
     if (on_small) {
         // On detecte les visages sur l'image redimenssionnée
-        m_faces = detector(m_img_small, num_faces);
+        m_faces = detector(m_img_small);
 
         if (m_faces.size() > num_faces)
             m_faces.resize(num_faces);
@@ -67,7 +67,7 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
         }
     } else {
         // On detecte les faces
-        m_faces = detector(m_img, num_faces);
+        m_faces = detector(m_img);
 
         if (m_faces.size() > num_faces)
             m_faces.resize(num_faces);
@@ -133,5 +133,5 @@ void Image::facesCenter(std::vector<cv::Point>& centers, const std::vector<std::
 void Image::display(dlib::image_window& win) const {
     win.clear_overlay();
     win.set_image(m_img);
-    // win.add_overlay(dlib::render_face_detections(m_shapes));
+    //win.add_overlay(dlib::render_face_detections(m_shapes));
 }

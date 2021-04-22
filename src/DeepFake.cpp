@@ -28,7 +28,7 @@ DeepFake::DeepFake() {}
 
 void DeepFake::run(const std::string& filename) const {
     // Nombre de visage que l'on veut par image
-    const int num_faces = 1;
+    const int num_faces = 10;
 
     FaceDetector faceDect(filename, num_faces);
     Timer time;
