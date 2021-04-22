@@ -48,6 +48,10 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
         // On detecte les visages sur l'image redimenssionnée
         m_faces = detector(m_img_small, num_faces);
 
+        if (m_faces.size() > num_faces)
+            m_faces.resize(num_faces);
+        m_shapes.resize(m_faces.size());
+
         // On trouve la position de chaque face
         for (unsigned int i = 0; i < m_faces.size(); ++i) {
             if (i > num_faces) break;
@@ -66,6 +70,10 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
     } else {
         // On detecte les faces
         m_faces = detector(m_img, num_faces);
+
+        if (m_faces.size() > num_faces)
+            m_faces.resize(num_faces);
+        m_shapes.resize(m_faces.size());
 
         // On trouve la position de chaque face
         for (unsigned int i = 0; i < m_faces.size(); ++i) {
