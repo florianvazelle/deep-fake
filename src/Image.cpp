@@ -72,25 +72,31 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
     }
 }
 
-void Image::convexHull(std::vector<std::vector<cv::Point>>& hulls) const {
+void Image::points(std::vector<std::vector<cv::Point>>& points) const {
+    points.resize(m_faces.size());
+
+    for (unsigned int i = 0; i < m_faces.size(); ++i) {
+        // On convertit tout les points d'un visage en point opencv
+        points[i].resize(m_shapes[i].num_parts());
+        for (unsigned int j = 0; j < m_shapes[i].num_parts(); ++j) {
+            points[i][j] = cv::Point(m_shapes[i].part(j).x(), m_shapes[i].part(j).y());
+        }
+    }
+}
+
+void Image::convexHull(std::vector<std::vector<cv::Point>>& hulls, const std::vector<std::vector<cv::Point>>& points) const {
     hulls.resize(m_faces.size());
 
     // On calcule le mask de chaque visage
     for (unsigned int i = 0; i < m_faces.size(); ++i) {
-        // On convertit tout les points d'un visage en point opencv
-        std::vector <cv::Point> points(m_shapes[i].num_parts());
-        for (unsigned int j = 0; j < m_shapes[i].num_parts(); ++j) {
-            points[j] = cv::Point(m_shapes[i].part(j).x(), m_shapes[i].part(j).y());
-        }
-
         // On applique une enveloppe convexe
         std::vector<int> hullIndex;
-        cv::convexHull(points, hullIndex, false, false);
+        cv::convexHull(points[i], hullIndex, false, false);
 
         // On récupère les points du mask
         hulls[i].resize(hullIndex.size());
         for (unsigned int j = 0; j < hullIndex.size(); ++j) {
-            hulls[i][j] = points[hullIndex[j]];
+            hulls[i][j] = points[i][hullIndex[j]];
         }
     }
 }

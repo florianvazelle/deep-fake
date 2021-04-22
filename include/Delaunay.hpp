@@ -95,6 +95,9 @@ static void warpTriangle(const cv::Mat &img1, cv::Mat &img2, std::vector<cv::Poi
     img2(r2) = img2(r2) + img2Rect;
 }
 
+
+// Credit : https://learnopencv.com/delaunay-triangulation-and-voronoi-diagram-using-opencv-c-python/
+
 static void draw_delaunay(cv::Mat& img, const std::vector<cv::Point> &points) {
     cv::Size size = img.size();
     cv::Rect rect(0, 0, size.width, size.height);

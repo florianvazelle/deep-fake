@@ -26,7 +26,8 @@ class Image final {
 
         void detect(const dlib::shape_predictor&, bool = true);
 
-        void convexHull(std::vector<std::vector<cv::Point>>&) const;
+        void points(std::vector<std::vector<cv::Point>>&) const;
+        void convexHull(std::vector<std::vector<cv::Point>>&, const std::vector<std::vector<cv::Point>>&) const;
         void masks(std::vector <cv::Mat>&, const std::vector<std::vector<cv::Point>>&) const;
         void facesCenter(std::vector<cv::Point>&) const;
 
