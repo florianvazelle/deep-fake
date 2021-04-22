@@ -6,10 +6,16 @@ class Timer final {
     public:
         Timer() : fps(0) {}
 
+        /**
+         * @brief Permet de débuter le timer
+         */
         inline void start() {
             time_start = cv::getTickCount();
         }
 
+        /**
+         * @brief Permet de finir le timer et d'afficher le résultat
+         */
         inline void display() {
             // On calcule les fps pour
             auto time_end = cv::getTickCount();
@@ -21,6 +27,9 @@ class Timer final {
         }
 
     private:
+        // Le nombre de fps
         float fps;
+
+        // Le temps représentant le moment ou le timer à débuter
         int64 time_start;
 };

@@ -3,7 +3,7 @@
 #include <Image.hpp>
 
 /**
- *  @brief Singleton
+ *  @brief DeepFake est l'objet représentant notre application
  */
 class DeepFake final {
     public:
