@@ -86,17 +86,14 @@ void DeepFake::run(const std::string& filename) const {
 
             /* Seamless Cloning */
             {
-                std::vector<std::vector<cv::Point>> hullsVideo;
-                faceDect.video().convexHull(hullsVideo, points);
-
                 std::vector<cv::Mat> masks;
-                faceDect.video().masks(masks, hullsVideo);
+                faceDect.video().masks(masks, points);
 
                 std::vector<cv::Point> centers;
                 faceDect.video().facesCenter(centers);
 
                 output.convertTo(output, defaultType);
-                // cv::seamlessClone(output, temp, masks[0], centers[0], output, cv::NORMAL_CLONE);
+                cv::seamlessClone(output, temp, masks[0], centers[0], output, cv::NORMAL_CLONE);
                 faceDect.video().loadImage(output);
             }
         } catch (...) {

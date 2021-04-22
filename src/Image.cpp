@@ -84,8 +84,8 @@ void Image::points(std::vector<std::vector<cv::Point>>& points) const {
     }
 }
 
-void Image::convexHull(std::vector<std::vector<cv::Point>>& hulls, const std::vector<std::vector<cv::Point>>& points) const {
-    hulls.resize(m_faces.size());
+void Image::masks(std::vector <cv::Mat>& masks, const std::vector<std::vector<cv::Point>>& points) const {
+    masks.resize(m_faces.size());
 
     // On calcule le mask de chaque visage
     for (unsigned int i = 0; i < m_faces.size(); ++i) {
@@ -94,21 +94,14 @@ void Image::convexHull(std::vector<std::vector<cv::Point>>& hulls, const std::ve
         cv::convexHull(points[i], hullIndex, false, false);
 
         // On récupère les points du mask
-        hulls[i].resize(hullIndex.size());
+        std::vector<cv::Point> hulls(hullIndex.size());
         for (unsigned int j = 0; j < hullIndex.size(); ++j) {
-            hulls[i][j] = points[i][hullIndex[j]];
+            hulls[j] = points[i][hullIndex[j]];
         }
-    }
-}
 
-void Image::masks(std::vector <cv::Mat>& masks, const std::vector<std::vector<cv::Point>>& hulls) const {
-    masks.resize(m_faces.size());
-
-    // On calcule le mask de chaque visage
-    for (unsigned int i = 0; i < m_faces.size(); ++i) {
         // On dessine le mask
         masks[i] = cv::Mat::zeros(m_rows, m_cols, m_depth);
-        cv::fillConvexPoly(masks[i], &hulls[i][0], hulls[i].size(), cv::Scalar(255, 255, 255));
+        cv::fillConvexPoly(masks[i], &hulls[0], hulls.size(), cv::Scalar(255, 255, 255));
     }
 }
 
