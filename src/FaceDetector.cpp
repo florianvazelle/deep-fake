@@ -21,9 +21,9 @@ bool FaceDetector::operator>>(cv::Mat& frame) {
 
     m_imgVideo.loadImage(frame);
 
-    if (m_count % SKIP_FRAMES == 0) {
+    // if (m_count % SKIP_FRAMES == 0) {
         m_imgVideo.detect(m_face_landmark);
-    }
+    // }
 
     m_count++;
 

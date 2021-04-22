@@ -91,16 +91,14 @@ void DeepFake::run(const std::string& filename) const {
                     std::vector<cv::Mat> masks;
                     faceDect.video().masks(masks, points);
 
-                    // std::vector<cv::Point> centers;
-                    // faceDect.video().facesCenter(centers);
+                    std::vector<cv::Point> centers;
+                    faceDect.video().facesCenter(centers, points);
 
                     output.convertTo(output, defaultType);
 
-                    cv::Rect r = cv::boundingRect(points[0]);
-                    cv::Point center = (r.tl() + r.br()) / 2;
-                    
-                    //cv::seamlessClone(output, temp, masks[0], center, output, cv::NORMAL_CLONE);
-                    faceDect.video().loadImage(output);
+                    cv::Mat temp_final;
+                    cv::seamlessClone(output, temp, masks[0], centers[0], temp_final, cv::NORMAL_CLONE);
+                    faceDect.video().loadImage(temp_final);
                 }
             }
         // } catch (...) {
