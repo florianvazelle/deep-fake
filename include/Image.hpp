@@ -15,7 +15,7 @@
 #include <dlib/gui_widgets.h>
 #include <dlib/image_transforms.h>
 
-using image_type = dlib::matrix<dlib::rgb_pixel>;
+using image_type = dlib::matrix<dlib::bgr_pixel>;
 
 /**
  * @brief Une Image est l'objet qui gére nos image dlib

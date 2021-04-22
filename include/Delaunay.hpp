@@ -56,10 +56,6 @@ static void calculateDelaunayTriangles(const cv::Rect& rect, const std::vector<c
 	}
 }
 
-static bool roiCondition(const cv::Mat& m, const cv::Rect& roi) {
-    return 0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= m.cols && 0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= m.rows;
-}
-
 /**
  * @brief Déformation les triangulaires de img1 vers img2
  */
@@ -96,31 +92,21 @@ static void warpTriangle(const cv::Mat &img1, cv::Mat &img2, std::vector<cv::Poi
 }
 
 
-// Credit : https://learnopencv.com/delaunay-triangulation-and-voronoi-diagram-using-opencv-c-python/
-
 static void draw_delaunay(cv::Mat& img, const std::vector<cv::Point> &points) {
     cv::Size size = img.size();
     cv::Rect rect(0, 0, size.width, size.height);
 
-    cv::Subdiv2D subdiv(rect);
+    std::vector<std::vector<int>> delaunayTri;
+    calculateDelaunayTriangles(rect, points, delaunayTri);
 
-    for (std::vector<cv::Point>::const_iterator it = points.begin(); it != points.end(); it++)
-        subdiv.insert(*it);
-
-    std::vector<cv::Vec6f> triangleList;
-    subdiv.getTriangleList(triangleList);
     std::vector<cv::Point> pt(3);
+    for (size_t i = 0; i < delaunayTri.size(); i++) {
+        pt[0] = points[delaunayTri[i][0]];
+        pt[1] = points[delaunayTri[i][1]];
+        pt[2] = points[delaunayTri[i][2]];
 
-    for (size_t i = 0; i < triangleList.size(); i++) {
-        cv::Vec6f t = triangleList[i];
-        pt[0] = cv::Point(cvRound(t[0]), cvRound(t[1]));
-        pt[1] = cv::Point(cvRound(t[2]), cvRound(t[3]));
-        pt[2] = cv::Point(cvRound(t[4]), cvRound(t[5]));
-
-        if (rect.contains(pt[0]) && rect.contains(pt[1]) && rect.contains(pt[2])) {
-            cv::line(img, pt[0], pt[1], cv::Scalar(255, 0, 0), 1, cv::LINE_AA, 0);
-            cv::line(img, pt[1], pt[2], cv::Scalar(255, 0, 0), 1, cv::LINE_AA, 0);
-            cv::line(img, pt[2], pt[0], cv::Scalar(255, 0, 0), 1, cv::LINE_AA, 0);
-        }
+        cv::line(img, pt[0], pt[1], cv::Scalar(1.0, 0, 0), 1, cv::LINE_AA, 0);
+        cv::line(img, pt[1], pt[2], cv::Scalar(1.0, 0, 0), 1, cv::LINE_AA, 0);
+        cv::line(img, pt[2], pt[0], cv::Scalar(1.0, 0, 0), 1, cv::LINE_AA, 0);
     }
 }
