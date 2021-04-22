@@ -43,10 +43,11 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
         // On detecte les visages sur l'image redimenssionnée
         m_faces.clear();
         m_faces = detector(m_img_small, num_faces);
-        m_faces.resize(num_faces);
 
         // On trouve la position de chaque face
         for (unsigned int i = 0; i < m_faces.size(); ++i) {
+            if (i > num_faces) break;
+
             // On redimensionne le rectangle obtenu pour obtenir une image en pleine résolution
             dlib::rectangle r(
                 (long)(m_faces[i].left() * FACE_DOWNSAMPLE_RATIO),
@@ -62,10 +63,11 @@ void Image::detect(const dlib::shape_predictor& face_landmark, bool on_small) {
         // On detecte les faces
         m_faces.clear();
         m_faces = detector(m_img, num_faces);
-        m_faces.resize(num_faces);
 
         // On trouve la position de chaque face
         for (unsigned int i = 0; i < m_faces.size(); ++i) {
+            if (i > num_faces) break;
+
             // On détecte les points de repère sur l'image en taille réelle
             m_shapes[i] = face_landmark(m_img, m_faces[i]);
         }
@@ -91,17 +93,23 @@ void Image::masks(std::vector <cv::Mat>& masks, const std::vector<std::vector<cv
     for (unsigned int i = 0; i < m_faces.size(); ++i) {
         // On applique une enveloppe convexe
         std::vector<int> hullIndex;
-        cv::convexHull(points[i], hullIndex, false, false);
 
-        // On récupère les points du mask
-        std::vector<cv::Point> hulls(hullIndex.size());
-        for (unsigned int j = 0; j < hullIndex.size(); ++j) {
-            hulls[j] = points[i][hullIndex[j]];
+        if (points[i].size()) {
+            cv::convexHull(points[i], hullIndex, false, false);
+
+            // On récupère les points du mask
+            std::vector<cv::Point> hulls(hullIndex.size());
+            for (unsigned int j = 0; j < hullIndex.size(); ++j) {
+                hulls[j] = points[i][hullIndex[j]];
+            }
+
+            // On dessine le mask
+            masks[i] = cv::Mat::zeros(m_rows, m_cols, m_depth);
+
+            if (hulls.size() > 0) {
+                cv::fillConvexPoly(masks[i], &hulls[0], hulls.size(), cv::Scalar(255, 255, 255));
+            }
         }
-
-        // On dessine le mask
-        masks[i] = cv::Mat::zeros(m_rows, m_cols, m_depth);
-        cv::fillConvexPoly(masks[i], &hulls[0], hulls.size(), cv::Scalar(255, 255, 255));
     }
 }
 
