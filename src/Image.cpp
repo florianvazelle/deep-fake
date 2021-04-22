@@ -5,6 +5,8 @@
 Image::Image(int num_faces) : num_faces(num_faces), m_shapes(num_faces) {}
 
 void Image::loadImage(const cv::Mat& mat) {
+    // Passage au format d'image de dlib
+    // Aucune mémoire n'est copiée
     dlib::cv_image<dlib::bgr_pixel> image(mat);
     dlib::assign_image(m_img, image);
 
@@ -108,7 +110,7 @@ void Image::masks(std::vector <cv::Mat>& masks, const std::vector<std::vector<cv
             masks[i] = cv::Mat::zeros(m_rows, m_cols, m_depth);
 
             if (hulls.size() > 0) {
-                cv::fillConvexPoly(masks[i], &hulls[0], hulls.size(), cv::Scalar(255, 255, 255));
+                cv::fillConvexPoly(masks[i], &hulls[0], hulls.size(), cv::Scalar(1.0, 1.0, 1.0));
             }
         }
     }
@@ -119,7 +121,7 @@ void Image::facesCenter(std::vector<cv::Point>& centers) const {
 
     // On calcule le centre de chaque visage
     for (unsigned int i = 0; i < m_faces.size(); ++i) {
-        cv::Rect rect(cv::Point2i(m_faces[i].left(), m_faces[i].top()), cv::Point2i(m_faces[i].right() + 1, m_faces[i].bottom() + 1));
+        cv::Rect rect(cv::Point(m_faces[i].left(), m_faces[i].top()), cv::Point(m_faces[i].right() + 1, m_faces[i].bottom() + 1));
         centers[i] = (rect.tl() + rect.br()) / 2;
     }
 }

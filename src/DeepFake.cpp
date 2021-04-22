@@ -69,7 +69,6 @@ void DeepFake::run(const std::string& filename) const {
                     std::vector<std::vector<int>> triangles;
                     const cv::Rect rect(0, 0, output.cols, output.rows);
                     calculateDelaunayTriangles(rect, points[0], triangles);
-                    // draw_delaunay(output, points[0]);
 
                     // On applique une transformation affine aux triangles que l'on viens de calculé
                     for(unsigned int i = 0; i < triangles.size(); i++) {
@@ -85,16 +84,22 @@ void DeepFake::run(const std::string& filename) const {
                     }
                 }
 
+                //draw_delaunay(output, points[0]);
+
                 /* Seamless Cloning */
                 {
                     std::vector<cv::Mat> masks;
                     faceDect.video().masks(masks, points);
 
-                    std::vector<cv::Point> centers;
-                    faceDect.video().facesCenter(centers);
+                    // std::vector<cv::Point> centers;
+                    // faceDect.video().facesCenter(centers);
 
                     output.convertTo(output, defaultType);
-                    // cv::seamlessClone(output, temp, masks[0], centers[0], output, cv::NORMAL_CLONE);
+
+                    cv::Rect r = cv::boundingRect(points[0]);
+                    cv::Point center = (r.tl() + r.br()) / 2;
+                    
+                    //cv::seamlessClone(output, temp, masks[0], center, output, cv::NORMAL_CLONE);
                     faceDect.video().loadImage(output);
                 }
             }
