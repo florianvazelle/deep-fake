@@ -118,18 +118,18 @@ void Image::masks(std::vector <cv::Mat>& masks, const std::vector<std::vector<cv
             masks[i] = cv::Mat::zeros(m_rows, m_cols, m_depth);
 
             if (hulls.size() > 0) {
-                cv::fillConvexPoly(masks[i], &hulls[0], hulls.size(), cv::Scalar(1.0, 1.0, 1.0));
+                cv::fillConvexPoly(masks[i], &hulls[0], hulls.size(), cv::Scalar(255, 255, 255));
             }
         }
     }
 }
 
-void Image::facesCenter(std::vector<cv::Point>& centers) const {
+void Image::facesCenter(std::vector<cv::Point>& centers, const std::vector<std::vector<cv::Point>>& points) const {
     centers.resize(m_faces.size());
 
     // On calcule le centre de chaque visage
     for (unsigned int i = 0; i < m_faces.size(); ++i) {
-        cv::Rect rect(cv::Point(m_faces[i].left(), m_faces[i].top()), cv::Point(m_faces[i].right() + 1, m_faces[i].bottom() + 1));
+        cv::Rect rect = cv::boundingRect(points[i]);
         centers[i] = (rect.tl() + rect.br()) / 2;
     }
 }

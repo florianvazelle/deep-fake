@@ -78,8 +78,9 @@ class Image final {
          * @brief Permet de récupèrer le point central pour chaque visage détecté
          *
          * @param centers La liste des centres que l'on va remplir
+         * @param points La liste des points que l'on utilise pour déterminer le centre à produire
          */
-        void facesCenter(std::vector<cv::Point>& centers) const;
+        void facesCenter(std::vector<cv::Point>& centers, const std::vector<std::vector<cv::Point>>& points) const;
 
         /**
          * @brief Permet de dessiner l'image sur une fenêtre
