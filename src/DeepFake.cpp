@@ -44,7 +44,7 @@ void DeepFake::run(const std::string& filename) const {
     while(!win.is_closed()) {
         time.start();
 
-        try {
+        // try {
             
             // On récupère une frame
             cv::Mat temp, output;
@@ -58,47 +58,49 @@ void DeepFake::run(const std::string& filename) const {
             std::vector<std::vector<cv::Point>> points;
             faceDect.video().points(points);
 
-            /* Delaunay & Transformation affine */
-            {
-                cv::Mat basic = faceDect.basic().toMat();
-                basic.convertTo(basic, CV_32F);
-                output.convertTo(output, CV_32F);
+            if (points.size() > 0) {
+                /* Delaunay & Transformation affine */
+                {
+                    cv::Mat basic = faceDect.basic().toMat();
+                    basic.convertTo(basic, CV_32F);
+                    output.convertTo(output, CV_32F);
 
-                // On récupère les triangle de la triangulation de delaunay sur l'envelope convexe
-                std::vector<std::vector<int>> triangles;
-                const cv::Rect rect(0, 0, output.cols, output.rows);
-                calculateDelaunayTriangles(rect, points[0], triangles);
-                // draw_delaunay(output, points[0]);
+                    // On récupère les triangle de la triangulation de delaunay sur l'envelope convexe
+                    std::vector<std::vector<int>> triangles;
+                    const cv::Rect rect(0, 0, output.cols, output.rows);
+                    calculateDelaunayTriangles(rect, points[0], triangles);
+                    // draw_delaunay(output, points[0]);
 
-                // On applique une transformation affine aux triangles que l'on viens de calculé
-                for(unsigned int i = 0; i < triangles.size(); i++) {
-                    std::vector<cv::Point> t1(3), t2(3);
+                    // On applique une transformation affine aux triangles que l'on viens de calculé
+                    for(unsigned int i = 0; i < triangles.size(); i++) {
+                        std::vector<cv::Point> t1(3), t2(3);
 
-                    // On récupère les triangles
-                    for(unsigned int j = 0; j < 3; j++) {
-                        t1[j] = pointsBasic[0][triangles[i][j]];
-                        t2[j] = points[0][triangles[i][j]];
+                        // On récupère les triangles
+                        for(unsigned int j = 0; j < 3; j++) {
+                            t1[j] = pointsBasic[0][triangles[i][j]];
+                            t2[j] = points[0][triangles[i][j]];
+                        }
+                        
+                        warpTriangle(basic, output, t1, t2);
                     }
-                    
-                    warpTriangle(basic, output, t1, t2);
+                }
+
+                /* Seamless Cloning */
+                {
+                    std::vector<cv::Mat> masks;
+                    faceDect.video().masks(masks, points);
+
+                    std::vector<cv::Point> centers;
+                    faceDect.video().facesCenter(centers);
+
+                    output.convertTo(output, defaultType);
+                    // cv::seamlessClone(output, temp, masks[0], centers[0], output, cv::NORMAL_CLONE);
+                    faceDect.video().loadImage(output);
                 }
             }
+        // } catch (...) {
 
-            /* Seamless Cloning */
-            {
-                std::vector<cv::Mat> masks;
-                faceDect.video().masks(masks, points);
-
-                std::vector<cv::Point> centers;
-                faceDect.video().facesCenter(centers);
-
-                output.convertTo(output, defaultType);
-                cv::seamlessClone(output, temp, masks[0], centers[0], output, cv::NORMAL_CLONE);
-                faceDect.video().loadImage(output);
-            }
-        } catch (...) {
-
-        }
+        // }
 
         time.display();
 
