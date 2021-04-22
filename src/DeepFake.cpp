@@ -44,7 +44,7 @@ void DeepFake::run(const std::string& filename) const {
     while(!win.is_closed()) {
         time.start();
 
-        // try {
+        try {
             
             // On récupère une frame
             cv::Mat temp, output;
@@ -84,7 +84,7 @@ void DeepFake::run(const std::string& filename) const {
                     }
                 }
 
-                //draw_delaunay(output, points[0]);
+                // draw_delaunay(output, points[0]);
 
                 /* Seamless Cloning */
                 {
@@ -101,9 +101,9 @@ void DeepFake::run(const std::string& filename) const {
                     faceDect.video().loadImage(temp_final);
                 }
             }
-        // } catch (...) {
+        } catch (...) {
 
-        // }
+        }
 
         time.display();
 
