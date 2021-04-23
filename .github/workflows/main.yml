@@ -3,63 +3,63 @@ name: build
 on: [push, pull_request]
 
 jobs:
-  linux:
-    strategy:
-      matrix:
-        compiler: [g++-7, g++-8, g++-9, g++, clang++-8, clang++-9, clang++]
+  # linux:
+  #   strategy:
+  #     matrix:
+  #       compiler: [g++-7, g++-8, g++-9, g++, clang++-8, clang++-9, clang++]
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Install g++-7
-        if: ${{ matrix.compiler == 'g++-7' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install g++-7 -y
+  #     - name: Install g++-7
+  #       if: ${{ matrix.compiler == 'g++-7' }}
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install g++-7 -y
 
-      - name: Install g++-8
-        if: ${{ matrix.compiler == 'g++-8' }}
-        run:  |
-          sudo apt-get update
-          sudo apt-get install g++-8 -y
+  #     - name: Install g++-8
+  #       if: ${{ matrix.compiler == 'g++-8' }}
+  #       run:  |
+  #         sudo apt-get update
+  #         sudo apt-get install g++-8 -y
 
-      - name: Install clang-8
-        if: ${{ matrix.compiler == 'clang++-8' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install clang-8 -y
+  #     - name: Install clang-8
+  #       if: ${{ matrix.compiler == 'clang++-8' }}
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install clang-8 -y
 
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt install libgtk2.0-dev
+  #     - name: Install Dependencies
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt install libgtk2.0-dev
 
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.6
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.6
 
-      - name: Install Conan
-        run: |
-          pip -VV
-          pip install --upgrade pip setuptools wheel conan
+  #     - name: Install Conan
+  #       run: |
+  #         pip -VV
+  #         pip install --upgrade pip setuptools wheel conan
 
-      - name: Create Build Environment
-        run: cmake -E make_directory ${{ runner.workspace }}/build ${{ runner.workspace }}/instdir
+  #     - name: Create Build Environment
+  #       run: cmake -E make_directory ${{ runner.workspace }}/build ${{ runner.workspace }}/instdir
 
-      - name: Configure CMake
-        shell: bash
-        working-directory: ${{ runner.workspace }}/build
-        run: cmake $GITHUB_WORKSPACE
-        env:
-          CXX: ${{ matrix.compiler }}
+  #     - name: Configure CMake
+  #       shell: bash
+  #       working-directory: ${{ runner.workspace }}/build
+  #       run: cmake $GITHUB_WORKSPACE
+  #       env:
+  #         CXX: ${{ matrix.compiler }}
 
-      - name: Build
-        shell: bash
-        working-directory: ${{ runner.workspace }}/build
-        run: cmake --build . --config Debug
+  #     - name: Build
+  #       shell: bash
+  #       working-directory: ${{ runner.workspace }}/build
+  #       run: cmake --build . --config Debug
 
   windows:
     strategy:
