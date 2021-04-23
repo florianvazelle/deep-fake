@@ -1,5 +1,7 @@
 # DeepFake
 
+Real-time face swapping application between a video and an image, built with OpenCV and dlib.
+
 ## Building
 
 ### Build and run the standalone target
